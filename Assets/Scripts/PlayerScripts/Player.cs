@@ -9,7 +9,6 @@ public class Player : MonoBehaviour
 	private Vector3 velocity;
 	private bool isGrounded;
 
-
 	public Vector2 movementInput { get; set; }
 	
 
@@ -36,7 +35,6 @@ public class Player : MonoBehaviour
         }
 		velocity.y -= gravity;
 
-		Debug.Log(velocity);
 		characterController.Move(velocity * Time.deltaTime);
     }
 
