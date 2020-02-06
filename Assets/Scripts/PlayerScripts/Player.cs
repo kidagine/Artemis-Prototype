@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 	[SerializeField] private Animator animator;
 	[SerializeField] private Bow bow;
 	[SerializeField] private CharacterController characterController;
+	[SerializeField] private GameObject reticleGameObject;
 	[SerializeField] private LayerMask environmentLayerMask;
 	private const float moveSpeed = 2f;
 	private const float gravity = 0.1f;
@@ -58,6 +59,7 @@ public class Player : MonoBehaviour
 	private IEnumerator DrawBowNum()
 	{
 		AudioManager.Instance.Play("DrawBow");
+		reticleGameObject.GetComponent<Animator>().SetTrigger("Focus");
 		float ratio = 0f;
 		float startValue = 0;
 		float endValue = 1;
@@ -76,8 +78,11 @@ public class Player : MonoBehaviour
 		{
 			hasArrow = false;
 			AudioManager.Instance.Play("FireBow");
+			animator.SetTrigger("Fire");
 			bow.FireArrow(firePower);
+
 			firePower = 0f;
+			animator.SetFloat("FirePower", firePower);
 		}
 	}
 }

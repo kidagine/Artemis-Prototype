@@ -3,10 +3,12 @@
 public class Bow : MonoBehaviour
 {
     [SerializeField] private Transform arrowTransform;
-    private float arrowForce = 30f;
+    [SerializeField] private ParticleSystem sparkParticleSystem;
+    private const float arrowForce = 30f;
 
     public void FireArrow(float firePower)
     {
+        sparkParticleSystem.Play();
         arrowTransform.SetParent(null);
         Rigidbody rigidbody = arrowTransform.GetComponent<Rigidbody>();
         rigidbody.isKinematic = false;
