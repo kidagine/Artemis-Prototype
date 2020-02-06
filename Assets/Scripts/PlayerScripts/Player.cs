@@ -3,11 +3,14 @@
 public class Player : MonoBehaviour
 {
 	[SerializeField] private CharacterController characterController;
+	[SerializeField] private Transform arrowTransform;
 	[SerializeField] private LayerMask environmentLayerMask;
+	public Vector3 arrowImpulse;
 	private const float moveSpeed = 2;
 	private const float gravity = 0.1f;
 	private Vector3 velocity;
 	private bool isGrounded;
+	private bool hasArrow = true;
 
 	public Vector2 movementInput { get; set; }
 	
@@ -16,8 +19,8 @@ public class Player : MonoBehaviour
     {
 		CheckGround();
 		Gravity();
-		Move();   
-    }
+		Move();
+	}
 
     private void CheckGround()
     {
@@ -42,5 +45,17 @@ public class Player : MonoBehaviour
 	{
 		Vector3 move = transform.right * movementInput.x + transform.forward * movementInput.y;
 		characterController.Move(move * moveSpeed * Time.deltaTime);
+	}
+
+	public void FireArrow()
+	{
+		if (hasArrow)
+		{
+			hasArrow = false;
+			arrowTransform.SetParent(null);
+			Rigidbody rigidbody = arrowTransform.GetComponent<Rigidbody>();
+			rigidbody.isKinematic = false;
+			rigidbody.AddForce(transform.forward * arrowImpulse.z + transform.up * arrowImpulse.y, ForceMode.Impulse);
+		}
 	}
 }

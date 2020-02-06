@@ -33,6 +33,14 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""f4c04dc3-156a-4df7-867f-461d4f97324b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -178,6 +186,28 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""action"": ""Camera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3d37e06e-9d8c-473a-a6d7-57d92c64b870"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b8014624-06b1-49ee-b93c-82202b89df60"",
+                    ""path"": ""<Mouse>/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -216,6 +246,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         m_PlayerControls = asset.FindActionMap("PlayerControls", throwIfNotFound: true);
         m_PlayerControls_Move = m_PlayerControls.FindAction("Move", throwIfNotFound: true);
         m_PlayerControls_Camera = m_PlayerControls.FindAction("Camera", throwIfNotFound: true);
+        m_PlayerControls_Fire = m_PlayerControls.FindAction("Fire", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -267,12 +298,14 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private IPlayerControlsActions m_PlayerControlsActionsCallbackInterface;
     private readonly InputAction m_PlayerControls_Move;
     private readonly InputAction m_PlayerControls_Camera;
+    private readonly InputAction m_PlayerControls_Fire;
     public struct PlayerControlsActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlayerControlsActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_PlayerControls_Move;
         public InputAction @Camera => m_Wrapper.m_PlayerControls_Camera;
+        public InputAction @Fire => m_Wrapper.m_PlayerControls_Fire;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -288,6 +321,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Camera.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCamera;
                 @Camera.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCamera;
                 @Camera.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCamera;
+                @Fire.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnFire;
+                @Fire.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnFire;
+                @Fire.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnFire;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -298,6 +334,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Camera.started += instance.OnCamera;
                 @Camera.performed += instance.OnCamera;
                 @Camera.canceled += instance.OnCamera;
+                @Fire.started += instance.OnFire;
+                @Fire.performed += instance.OnFire;
+                @Fire.canceled += instance.OnFire;
             }
         }
     }
@@ -324,5 +363,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnCamera(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
     }
 }
