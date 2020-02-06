@@ -13,6 +13,7 @@ public class PlayerInputSystem : MonoBehaviour
 		playerInputActions = new PlayerInputActions();
 		playerInputActions.PlayerControls.Move.performed += SetMove;
 		playerInputActions.PlayerControls.Camera.performed += SetCamera;
+		playerInputActions.PlayerControls.Draw.performed += DrawBow;
 		playerInputActions.PlayerControls.Fire.performed += FireArrow;
 	}
 
@@ -24,6 +25,14 @@ public class PlayerInputSystem : MonoBehaviour
 	private void SetCamera(InputAction.CallbackContext context)
 	{
 		playerCamera.cameraInput = context.ReadValue<Vector2>();
+	}
+
+	private void DrawBow(InputAction.CallbackContext context)
+	{
+		if (context.performed)
+		{
+			playerScript.DrawBow();
+		}
 	}
 
 	private void FireArrow(InputAction.CallbackContext context)

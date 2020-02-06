@@ -1,19 +1,22 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+	[SerializeField] private Animator animator;
+	[SerializeField] private Bow bow;
 	[SerializeField] private CharacterController characterController;
-	[SerializeField] private Transform arrowTransform;
 	[SerializeField] private LayerMask environmentLayerMask;
-	public Vector3 arrowImpulse;
-	private const float moveSpeed = 2;
+	private const float moveSpeed = 2f;
 	private const float gravity = 0.1f;
+	private float firePower;
 	private Vector3 velocity;
 	private bool isGrounded;
 	private bool hasArrow = true;
 
 	public Vector2 movementInput { get; set; }
-	
+	public bool isDrawingBow { get; set; }
+
 
     void Update()
     {
@@ -47,15 +50,34 @@ public class Player : MonoBehaviour
 		characterController.Move(move * moveSpeed * Time.deltaTime);
 	}
 
+	public void DrawBow()
+	{
+		StartCoroutine(DrawBowNum());
+	}
+
+	private IEnumerator DrawBowNum()
+	{
+		AudioManager.Instance.Play("DrawBow");
+		float ratio = 0f;
+		float startValue = 0;
+		float endValue = 1;
+		while (ratio <= 1)
+		{
+			ratio += 0.02f;
+			firePower = Mathf.Lerp(startValue, endValue, ratio);
+			animator.SetFloat("FirePower", firePower);
+			yield return new WaitForSeconds(0.01f);
+		}
+	}
+
 	public void FireArrow()
 	{
 		if (hasArrow)
 		{
 			hasArrow = false;
-			arrowTransform.SetParent(null);
-			Rigidbody rigidbody = arrowTransform.GetComponent<Rigidbody>();
-			rigidbody.isKinematic = false;
-			rigidbody.AddForce(transform.forward * arrowImpulse.z + transform.up * arrowImpulse.y, ForceMode.Impulse);
+			AudioManager.Instance.Play("FireBow");
+			bow.FireArrow(firePower);
+			firePower = 0f;
 		}
 	}
 }

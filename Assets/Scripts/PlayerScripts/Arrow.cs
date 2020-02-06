@@ -6,10 +6,10 @@ public class Arrow : MonoBehaviour
     {
         if (other.collider.gameObject.layer == LayerMask.NameToLayer("Environment"))
         {
-            print(other.gameObject.name);
-            GetComponent<Rigidbody>().Sleep();
-            GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            GetComponent<Rigidbody>().isKinematic = true;
+            //print(other.gameObject.name);
+            //GetComponent<Rigidbody>().Sleep();
+            //GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            //GetComponent<Rigidbody>().isKinematic = true;
         }
     }
 }
