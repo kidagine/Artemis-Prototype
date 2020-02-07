@@ -3,7 +3,7 @@
 public class PlayerCamera : MonoBehaviour
 {
     [SerializeField] private Transform playerTransform;
-    private const float mouseSensitivity = 15f;
+    private const float mouseSensitivity = 20f;
     private float rotationX;
 
     public Vector2 cameraInput { get; set; }

@@ -5,16 +5,20 @@ public class Player : MonoBehaviour
 {
 	[SerializeField] private Animator animator;
 	[SerializeField] private Bow bow;
+	[SerializeField] private Arrow arrow;
 	[SerializeField] private CharacterController characterController;
 	[SerializeField] private GameObject reticleGameObject;
 	[SerializeField] private LayerMask environmentLayerMask;
-	private const float moveSpeed = 2f;
+	private const float aimSpeed = 1.5f;
+	private const float walkSpeed = 4f;
 	private const float gravity = 0.1f;
+	private float moveSpeed = 4f;
 	private float firePower;
 	private Vector3 velocity;
 	private bool isGrounded;
 	private bool hasArrow = true;
 
+	private Coroutine c;
 	public Vector2 movementInput { get; set; }
 	public bool isDrawingBow { get; set; }
 
@@ -24,6 +28,7 @@ public class Player : MonoBehaviour
 		CheckGround();
 		Gravity();
 		Move();
+		SummonArrow();
 	}
 
     private void CheckGround()
@@ -51,15 +56,45 @@ public class Player : MonoBehaviour
 		characterController.Move(move * moveSpeed * Time.deltaTime);
 	}
 
+	private void SummonArrow()
+	{
+		if (!hasArrow)
+		{
+			if (Input.GetMouseButton(1))
+			{
+				arrow.Summon(true, transform);
+			}
+			else if (Input.GetMouseButtonUp(1))
+			{
+				arrow.Summon(false, transform);
+			}
+		}
+	}
+
+	public void GrabArrow()
+	{
+		if (!hasArrow)
+		{
+			hasArrow = true;
+			bow.EquipArrow();
+		}
+	}
+
 	public void DrawBow()
 	{
-		StartCoroutine(DrawBowNum());
+		if (hasArrow)
+		{
+			c = StartCoroutine(DrawBowNum());
+		}
 	}
 
 	private IEnumerator DrawBowNum()
 	{
 		AudioManager.Instance.Play("DrawBow");
-		reticleGameObject.GetComponent<Animator>().SetTrigger("Focus");
+		reticleGameObject.GetComponent<Animator>().SetBool("IsCharging", true);
+		moveSpeed = aimSpeed;
+		animator.SetBool("IsCharging", true);
+
 		float ratio = 0f;
 		float startValue = 0;
 		float endValue = 1;
@@ -68,6 +103,7 @@ public class Player : MonoBehaviour
 			ratio += 0.02f;
 			firePower = Mathf.Lerp(startValue, endValue, ratio);
 			animator.SetFloat("FirePower", firePower);
+			Debug.Log("s");
 			yield return new WaitForSeconds(0.01f);
 		}
 	}
@@ -78,9 +114,13 @@ public class Player : MonoBehaviour
 		{
 			hasArrow = false;
 			AudioManager.Instance.Play("FireBow");
-			animator.SetTrigger("Fire");
+			animator.SetBool("IsCharging", false);
+			reticleGameObject.GetComponent<Animator>().SetBool("IsCharging", false);
+			moveSpeed = walkSpeed;
 			bow.FireArrow(firePower);
 
+			Debug.Log("stop");
+			StopCoroutine(c);
 			firePower = 0f;
 			animator.SetFloat("FirePower", firePower);
 		}
