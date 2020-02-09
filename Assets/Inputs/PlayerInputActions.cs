@@ -49,6 +49,22 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""StartSummon"",
+                    ""type"": ""Button"",
+                    ""id"": ""1894f445-4391-4078-a748-c419e398ff74"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""StopSummon"",
+                    ""type"": ""Button"",
+                    ""id"": ""1eb4fe6e-db9f-4e27-ad05-abb586c1961f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -238,6 +254,50 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""action"": ""Fire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3b29826c-6834-4b87-9e02-13f3be9d4d01"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StartSummon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ca05d836-4e54-4816-94ee-9c2e9fcbad56"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StartSummon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a47397df-f06c-467f-98f8-e37fa616e2d1"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StopSummon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""da353e23-6cd0-42d6-ae40-18df1e44aa78"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StopSummon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -278,6 +338,8 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         m_PlayerControls_Camera = m_PlayerControls.FindAction("Camera", throwIfNotFound: true);
         m_PlayerControls_Draw = m_PlayerControls.FindAction("Draw", throwIfNotFound: true);
         m_PlayerControls_Fire = m_PlayerControls.FindAction("Fire", throwIfNotFound: true);
+        m_PlayerControls_StartSummon = m_PlayerControls.FindAction("StartSummon", throwIfNotFound: true);
+        m_PlayerControls_StopSummon = m_PlayerControls.FindAction("StopSummon", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -331,6 +393,8 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerControls_Camera;
     private readonly InputAction m_PlayerControls_Draw;
     private readonly InputAction m_PlayerControls_Fire;
+    private readonly InputAction m_PlayerControls_StartSummon;
+    private readonly InputAction m_PlayerControls_StopSummon;
     public struct PlayerControlsActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -339,6 +403,8 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         public InputAction @Camera => m_Wrapper.m_PlayerControls_Camera;
         public InputAction @Draw => m_Wrapper.m_PlayerControls_Draw;
         public InputAction @Fire => m_Wrapper.m_PlayerControls_Fire;
+        public InputAction @StartSummon => m_Wrapper.m_PlayerControls_StartSummon;
+        public InputAction @StopSummon => m_Wrapper.m_PlayerControls_StopSummon;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -360,6 +426,12 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Fire.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnFire;
                 @Fire.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnFire;
                 @Fire.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnFire;
+                @StartSummon.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnStartSummon;
+                @StartSummon.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnStartSummon;
+                @StartSummon.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnStartSummon;
+                @StopSummon.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnStopSummon;
+                @StopSummon.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnStopSummon;
+                @StopSummon.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnStopSummon;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -376,6 +448,12 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Fire.started += instance.OnFire;
                 @Fire.performed += instance.OnFire;
                 @Fire.canceled += instance.OnFire;
+                @StartSummon.started += instance.OnStartSummon;
+                @StartSummon.performed += instance.OnStartSummon;
+                @StartSummon.canceled += instance.OnStartSummon;
+                @StopSummon.started += instance.OnStopSummon;
+                @StopSummon.performed += instance.OnStopSummon;
+                @StopSummon.canceled += instance.OnStopSummon;
             }
         }
     }
@@ -404,5 +482,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         void OnCamera(InputAction.CallbackContext context);
         void OnDraw(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+        void OnStartSummon(InputAction.CallbackContext context);
+        void OnStopSummon(InputAction.CallbackContext context);
     }
 }

@@ -5,18 +5,18 @@ using UnityEngine.Rendering;
 public class Player : MonoBehaviour
 {
 	[SerializeField] private Animator animator;
+	[SerializeField] private Animator reticleAnimator;
 	[SerializeField] private Bow bow;
 	[SerializeField] private Arrow arrow;
 	[SerializeField] private CharacterController characterController;
-	[SerializeField] private GameObject reticleGameObject;
-	[SerializeField] private Transform cameraTransform;
 	[SerializeField] private Material material;
 	[SerializeField] private MeshRenderer arrowMeshRenderer;
 	[SerializeField] private LayerMask environmentLayerMask;
+	private Coroutine drawBowCoroutine;
+	private Coroutine summonArrowCoroutine;
 	private const float aimSpeed = 1.5f;
 	private const float walkSpeed = 4f;
 	private const float gravity = 0.1f;
-	private const float pickableRange = 1.5f;
 	private float moveSpeed = 4f;
 	private float firePower;
 	private Vector3 velocity;
@@ -24,7 +24,6 @@ public class Player : MonoBehaviour
 	private bool hasArrow = true;
 
 	private float t;
-	private Coroutine c;
 	public Vector2 movementInput { get; set; }
 	public bool isDrawingBow { get; set; }
 
@@ -34,8 +33,6 @@ public class Player : MonoBehaviour
 		CheckGround();
 		Gravity();
 		Move();
-		SummonArrow();
-		PickUpArrow();
 	}
 
     private void CheckGround()
@@ -63,33 +60,93 @@ public class Player : MonoBehaviour
 		characterController.Move(move * moveSpeed * Time.deltaTime);
 	}
 
-	private void SummonArrow()
+	public void DrawBow()
+	{
+		if (hasArrow)
+		{
+			drawBowCoroutine = StartCoroutine(DrawBowCoroutine());
+		}
+	}
+
+	private IEnumerator DrawBowCoroutine()
+	{
+		AudioManager.Instance.Play("DrawBow");
+		reticleAnimator.SetBool("IsCharging", true);
+		animator.SetBool("IsCharging", true);
+		moveSpeed = aimSpeed;
+
+		float elapsedTime = 0f;
+		float waitTime = 0.7f;
+		float startValue = 0;
+		float endValue = 1;
+		while (elapsedTime < waitTime)
+		{
+			firePower = Mathf.Lerp(startValue, endValue, (elapsedTime / waitTime));
+			animator.SetFloat("FirePower", firePower);
+			elapsedTime += Time.deltaTime;
+			yield return null;
+		}
+		firePower = endValue;
+		yield return null;
+	}
+
+	public void FireArrow()
+	{
+		if (hasArrow)
+		{
+			StopCoroutine(drawBowCoroutine);
+			AudioManager.Instance.Play("FireBow");
+			reticleAnimator.SetBool("IsCharging", false);
+			animator.SetBool("IsCharging", false);
+			moveSpeed = walkSpeed;
+
+			arrowMeshRenderer.shadowCastingMode = ShadowCastingMode.On;
+			hasArrow = false;
+			bow.FireArrow(firePower);
+
+			firePower = 0f;
+			animator.SetFloat("FirePower", firePower);
+		}
+	}
+
+	public void StartSummonArrow()
 	{
 		if (!hasArrow)
 		{
-			if (Input.GetMouseButtonDown(1))
-			{
-				AudioManager.Instance.Play("SummonArrow");
-			}
-			if (Input.GetMouseButton(1))
-			{
-				animator.SetBool("IsSummoning", true);
-				t += 1f * Time.deltaTime;
-				float glowValue = Mathf.Lerp(0, 0.05f, t);
-				material.SetFloat("_GlowPower", glowValue); arrow.Summon(true, transform);
-			}
-			else if (Input.GetMouseButtonUp(1))
-			{
-				AudioManager.Instance.Stop("SummonArrow");
-				t = 0;
-				animator.SetBool("IsSummoning", false);
-				material.SetFloat("_GlowPower", 0f);
-				arrow.Summon(false, transform);
-			}
+			summonArrowCoroutine = StartCoroutine(SummonArrowCoroutine());
 		}
-		else
+	}
+
+	IEnumerator SummonArrowCoroutine()
+	{
+		AudioManager.Instance.Play("SummonArrow");
+		animator.SetBool("IsSummoning", true);
+		arrow.SetSummon(true);
+		moveSpeed = walkSpeed;
+
+		float elapsedTime = 0f;
+		float waitTime = 1.2f;
+		float startValue = 0;
+		float endValue = 0.05f;
+		while (elapsedTime < waitTime)
 		{
+			float glowValue = Mathf.Lerp(startValue, endValue, (elapsedTime / waitTime));
+			material.SetFloat("_GlowPower", glowValue);
+			elapsedTime += Time.deltaTime;
+			yield return null;
+		}
+		yield return null;
+	}
+
+	public void StopSummonArrow()
+	{
+		if (!hasArrow)
+		{
+			StopCoroutine(summonArrowCoroutine);
+			AudioManager.Instance.Stop("SummonArrow");
 			animator.SetBool("IsSummoning", false);
+			material.SetFloat("_GlowPower", 0f);
+			arrow.SetSummon(false);
 		}
 	}
 
@@ -97,75 +154,13 @@ public class Player : MonoBehaviour
 	{
 		if (!hasArrow)
 		{
-			AudioManager.Instance.Stop("SummonArrow");
+			StopSummonArrow();
 			AudioManager.Instance.Play("CatchArrow");
-			arrowMeshRenderer.shadowCastingMode = ShadowCastingMode.Off;
 			animator.SetTrigger("Catch");
-			t = 0;
-			material.SetFloat("_GlowPower", 0f);
+			
 			hasArrow = true;
+			arrowMeshRenderer.shadowCastingMode = ShadowCastingMode.Off;
 			bow.EquipArrow();
-		}
-	}
-
-	public void DrawBow()
-	{
-		if (hasArrow)
-		{
-			c = StartCoroutine(DrawBowNum());
-		}
-	}
-
-	private IEnumerator DrawBowNum()
-	{
-		AudioManager.Instance.Play("DrawBow");
-		reticleGameObject.GetComponent<Animator>().SetBool("IsCharging", true);
-		moveSpeed = aimSpeed;
-		animator.SetBool("IsCharging", true);
-
-		float ratio = 0f;
-		float startValue = 0;
-		float endValue = 1;
-		while (ratio <= 1)
-		{
-			ratio += 0.02f;
-			firePower = Mathf.Lerp(startValue, endValue, ratio);
-			animator.SetFloat("FirePower", firePower);
-			yield return new WaitForSeconds(0.01f);
-		}
-	}
-
-	public void FireArrow()
-	{
-		if (hasArrow)
-		{
-			arrowMeshRenderer.shadowCastingMode = ShadowCastingMode.On;
-			hasArrow = false;
-			AudioManager.Instance.Play("FireBow");
-			animator.SetBool("IsCharging", false);
-			reticleGameObject.GetComponent<Animator>().SetBool("IsCharging", false);
-			moveSpeed = walkSpeed;
-			bow.FireArrow(firePower);
-
-			StopCoroutine(c);
-			firePower = 0f;
-			animator.SetFloat("FirePower", firePower);
-		}
-	}
-
-	private void PickUpArrow()
-	{
-		Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, pickableRange);
-		if (hit.collider != null)
-		{
-			Arrow arrow = hit.collider.GetComponent<Arrow>();
-			if (arrow != null)
-			{
-				if (Input.GetKeyDown(KeyCode.F))
-				{
-					arrow.Pickup(GetComponent<Player>());
-				}
-			}
 		}
 	}
 }

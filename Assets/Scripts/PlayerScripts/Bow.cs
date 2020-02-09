@@ -8,13 +8,15 @@ public class Bow : MonoBehaviour
     [SerializeField] private TrailRenderer trailEffect;
     private const float arrowForce = 25f;
 
+
     public void FireArrow(float firePower)
     {
-        sparkParticleSystem.Play();
         arrowTransform.SetParent(null);
         Rigidbody rigidbody = arrowTransform.GetComponent<Rigidbody>();
         rigidbody.isKinematic = false;
         rigidbody.AddForce(transform.forward * arrowForce * firePower, ForceMode.Impulse);
+
+        sparkParticleSystem.Play();
         trailEffect.enabled = true;
     }
 
@@ -24,8 +26,8 @@ public class Bow : MonoBehaviour
         Rigidbody rigidbody = arrowTransform.GetComponent<Rigidbody>();
         rigidbody.isKinematic = true;
 
+        trailEffect.enabled = false;
         arrowTransform.localPosition = Vector3.zero;
         arrowTransform.localRotation = Quaternion.identity;
-
     }
 }

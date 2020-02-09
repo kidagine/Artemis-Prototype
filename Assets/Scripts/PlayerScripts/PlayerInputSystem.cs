@@ -15,6 +15,8 @@ public class PlayerInputSystem : MonoBehaviour
 		playerInputActions.PlayerControls.Camera.performed += SetCamera;
 		playerInputActions.PlayerControls.Draw.performed += DrawBow;
 		playerInputActions.PlayerControls.Fire.performed += FireArrow;
+		playerInputActions.PlayerControls.StartSummon.performed += SummonArrow;
+		playerInputActions.PlayerControls.StopSummon.performed += StopSummonArrow;
 	}
 
 	private void SetMove(InputAction.CallbackContext context)
@@ -40,6 +42,22 @@ public class PlayerInputSystem : MonoBehaviour
 		if (context.performed)
 		{
 			playerScript.FireArrow();
+		}
+	}
+
+	private void SummonArrow(InputAction.CallbackContext context)
+	{
+		if (context.performed)
+		{
+			playerScript.StartSummonArrow();
+		}
+	}
+
+	private void StopSummonArrow(InputAction.CallbackContext context)
+	{
+		if (context.performed)
+		{
+			playerScript.StopSummonArrow();
 		}
 	}
 
