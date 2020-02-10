@@ -65,6 +65,14 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Crouch"",
+                    ""type"": ""Button"",
+                    ""id"": ""66682dd0-7a58-4da3-8b26-b0e09ca8013b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -298,6 +306,28 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""action"": ""StopSummon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ac393570-ba4f-4f0d-a511-08dc83ada051"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bd9bea40-6916-4431-ab21-09dad2cfee1b"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -340,6 +370,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         m_PlayerControls_Fire = m_PlayerControls.FindAction("Fire", throwIfNotFound: true);
         m_PlayerControls_StartSummon = m_PlayerControls.FindAction("StartSummon", throwIfNotFound: true);
         m_PlayerControls_StopSummon = m_PlayerControls.FindAction("StopSummon", throwIfNotFound: true);
+        m_PlayerControls_Crouch = m_PlayerControls.FindAction("Crouch", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -395,6 +426,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerControls_Fire;
     private readonly InputAction m_PlayerControls_StartSummon;
     private readonly InputAction m_PlayerControls_StopSummon;
+    private readonly InputAction m_PlayerControls_Crouch;
     public struct PlayerControlsActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -405,6 +437,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         public InputAction @Fire => m_Wrapper.m_PlayerControls_Fire;
         public InputAction @StartSummon => m_Wrapper.m_PlayerControls_StartSummon;
         public InputAction @StopSummon => m_Wrapper.m_PlayerControls_StopSummon;
+        public InputAction @Crouch => m_Wrapper.m_PlayerControls_Crouch;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -432,6 +465,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @StopSummon.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnStopSummon;
                 @StopSummon.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnStopSummon;
                 @StopSummon.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnStopSummon;
+                @Crouch.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCrouch;
+                @Crouch.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCrouch;
+                @Crouch.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCrouch;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -454,6 +490,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @StopSummon.started += instance.OnStopSummon;
                 @StopSummon.performed += instance.OnStopSummon;
                 @StopSummon.canceled += instance.OnStopSummon;
+                @Crouch.started += instance.OnCrouch;
+                @Crouch.performed += instance.OnCrouch;
+                @Crouch.canceled += instance.OnCrouch;
             }
         }
     }
@@ -484,5 +523,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         void OnFire(InputAction.CallbackContext context);
         void OnStartSummon(InputAction.CallbackContext context);
         void OnStopSummon(InputAction.CallbackContext context);
+        void OnCrouch(InputAction.CallbackContext context);
     }
 }

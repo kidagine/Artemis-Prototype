@@ -14,18 +14,21 @@ public class Player : MonoBehaviour
 	[SerializeField] private LayerMask environmentLayerMask;
 	private Coroutine drawBowCoroutine;
 	private Coroutine summonArrowCoroutine;
-	private const float aimSpeed = 1.5f;
-	private const float walkSpeed = 4f;
 	private const float gravity = 0.1f;
+	private const float aimSpeed = 1.5f;
+	private const float summonArrowSpeed = 2f;
+	private const float walkSpeed = 4f;
+	private const float crouchSpeedMultiplier = 0.7f;
+	private const float standUpSpeedMultiplier = 1f;
+	private float currentSpeedMultiplier = 1f;
 	private float moveSpeed = 4f;
 	private float firePower;
 	private Vector3 velocity;
 	private bool isGrounded;
 	private bool hasArrow = true;
+	private bool isCrouching;
 
-	private float t;
 	public Vector2 movementInput { get; set; }
-	public bool isDrawingBow { get; set; }
 
 
     void Update()
@@ -37,9 +40,7 @@ public class Player : MonoBehaviour
 
     private void CheckGround()
     {
-		Vector3 checkGround = new Vector3(transform.position.x,
-            transform.position.y - characterController.height / 2,
-            transform.position.z);
+		Vector3 checkGround = new Vector3(transform.position.x, transform.position.y - characterController.height / 2, transform.position.z);
 		isGrounded = Physics.Raycast(checkGround, Vector3.down, 0.1f, environmentLayerMask);
     }
 
@@ -60,6 +61,31 @@ public class Player : MonoBehaviour
 		characterController.Move(move * moveSpeed * Time.deltaTime);
 	}
 
+	public void Crouch()
+	{
+		if (isCrouching)
+		{
+			Vector3 checkCelling = new Vector3(transform.position.x, transform.position.y + characterController.height / 2, transform.position.z);
+			bool cantStandUp = Physics.Raycast(checkCelling, Vector3.up, characterController.height, environmentLayerMask);
+			if (!cantStandUp)
+			{
+				characterController.height = 2.0f;
+				currentSpeedMultiplier = standUpSpeedMultiplier;
+
+				moveSpeed = walkSpeed * currentSpeedMultiplier;
+				isCrouching = !isCrouching;
+			}
+		}
+		else
+		{
+			characterController.height = 1.0f;
+			currentSpeedMultiplier = crouchSpeedMultiplier;
+
+			moveSpeed = walkSpeed * currentSpeedMultiplier;
+			isCrouching = !isCrouching;
+		}
+	}
+
 	public void DrawBow()
 	{
 		if (hasArrow)
@@ -73,7 +99,7 @@ public class Player : MonoBehaviour
 		AudioManager.Instance.Play("DrawBow");
 		reticleAnimator.SetBool("IsCharging", true);
 		animator.SetBool("IsCharging", true);
-		moveSpeed = aimSpeed;
+		moveSpeed = aimSpeed * currentSpeedMultiplier;
 
 		float elapsedTime = 0f;
 		float waitTime = 0.7f;
@@ -98,7 +124,7 @@ public class Player : MonoBehaviour
 			AudioManager.Instance.Play("FireBow");
 			reticleAnimator.SetBool("IsCharging", false);
 			animator.SetBool("IsCharging", false);
-			moveSpeed = walkSpeed;
+			moveSpeed = walkSpeed * currentSpeedMultiplier;
 
 			arrowMeshRenderer.shadowCastingMode = ShadowCastingMode.On;
 			hasArrow = false;
@@ -122,7 +148,7 @@ public class Player : MonoBehaviour
 		AudioManager.Instance.Play("SummonArrow");
 		animator.SetBool("IsSummoning", true);
 		arrow.SetSummon(true);
-		moveSpeed = walkSpeed;
+		moveSpeed = summonArrowSpeed * currentSpeedMultiplier;
 
 		float elapsedTime = 0f;
 		float waitTime = 1.2f;
@@ -157,7 +183,8 @@ public class Player : MonoBehaviour
 			StopSummonArrow();
 			AudioManager.Instance.Play("CatchArrow");
 			animator.SetTrigger("Catch");
-			
+			moveSpeed = walkSpeed * currentSpeedMultiplier;
+
 			hasArrow = true;
 			arrowMeshRenderer.shadowCastingMode = ShadowCastingMode.Off;
 			bow.EquipArrow();
