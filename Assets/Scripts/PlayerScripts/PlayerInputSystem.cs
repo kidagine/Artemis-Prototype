@@ -13,16 +13,52 @@ public class PlayerInputSystem : MonoBehaviour
 		playerInputActions = new PlayerInputActions();
 		playerInputActions.PlayerControls.Move.performed += SetMove;
 		playerInputActions.PlayerControls.Camera.performed += SetCamera;
+		playerInputActions.PlayerControls.Draw.performed += DrawBow;
+		playerInputActions.PlayerControls.Fire.performed += FireArrow;
+		playerInputActions.PlayerControls.StartSummon.performed += SummonArrow;
+		playerInputActions.PlayerControls.StopSummon.performed += StopSummonArrow;
 	}
 
-	public void SetMove(InputAction.CallbackContext context)
+	private void SetMove(InputAction.CallbackContext context)
 	{
 		playerScript.movementInput = context.ReadValue<Vector2>();
 	}
 
-	public void SetCamera(InputAction.CallbackContext context)
+	private void SetCamera(InputAction.CallbackContext context)
 	{
 		playerCamera.cameraInput = context.ReadValue<Vector2>();
+	}
+
+	private void DrawBow(InputAction.CallbackContext context)
+	{
+		if (context.performed)
+		{
+			playerScript.DrawBow();
+		}
+	}
+
+	private void FireArrow(InputAction.CallbackContext context)
+	{
+		if (context.performed)
+		{
+			playerScript.FireArrow();
+		}
+	}
+
+	private void SummonArrow(InputAction.CallbackContext context)
+	{
+		if (context.performed)
+		{
+			playerScript.StartSummonArrow();
+		}
+	}
+
+	private void StopSummonArrow(InputAction.CallbackContext context)
+	{
+		if (context.performed)
+		{
+			playerScript.StopSummonArrow();
+		}
 	}
 
 	private void OnEnable()
