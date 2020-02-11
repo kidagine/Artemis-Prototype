@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -11,9 +12,12 @@ public class Player : MonoBehaviour
 	[SerializeField] private CharacterController characterController;
 	[SerializeField] private Material material;
 	[SerializeField] private MeshRenderer arrowMeshRenderer;
+	[SerializeField] private TrailRenderer dashTrailRenderer;
+	[SerializeField] private Text test;
 	[SerializeField] private LayerMask environmentLayerMask;
 	private Coroutine drawBowCoroutine;
 	private Coroutine summonArrowCoroutine;
+	private const float dashForce = 500f;
 	private const float gravity = 0.1f;
 	private const float aimSpeed = 1.5f;
 	private const float summonArrowSpeed = 2f;
@@ -21,9 +25,12 @@ public class Player : MonoBehaviour
 	private const float crouchSpeedMultiplier = 0.7f;
 	private const float standUpSpeedMultiplier = 1f;
 	private float currentSpeedMultiplier = 1f;
-	private float moveSpeed = 4f;
 	private float firePower;
+	private float moveSpeed = 4f;
+	private float dashCooldown = 3;
+	private int dashAmount = 3;
 	private Vector3 velocity;
+	private bool isDashing;
 	private bool isGrounded;
 	private bool hasArrow = true;
 	private bool isCrouching;
@@ -36,6 +43,7 @@ public class Player : MonoBehaviour
 		CheckGround();
 		Gravity();
 		Move();
+		DashCooldown();
 	}
 
     private void CheckGround()
@@ -57,8 +65,11 @@ public class Player : MonoBehaviour
 
 	private void Move()
 	{
-		Vector3 move = transform.right * movementInput.x + transform.forward * movementInput.y;
-		characterController.Move(move * moveSpeed * Time.deltaTime);
+		if (!isDashing)
+		{
+			Vector3 move = transform.right * movementInput.x + transform.forward * movementInput.y;
+			characterController.Move(move * moveSpeed * Time.deltaTime);
+		}
 	}
 
 	public void Crouch()
@@ -83,6 +94,47 @@ public class Player : MonoBehaviour
 
 			moveSpeed = walkSpeed * currentSpeedMultiplier;
 			isCrouching = !isCrouching;
+		}
+	}
+
+	public void Dash()
+	{
+		if (dashAmount > 0)
+		{
+			AudioManager.Instance.Play("Dash");
+			animator.SetTrigger("Dash");
+			isDashing = true;
+			dashTrailRenderer.emitting = true;
+
+			Vector3 move = transform.right * movementInput.x * dashForce + transform.forward * movementInput.y * dashForce;
+			if (move == Vector3.zero)
+			{
+				move = transform.forward * dashForce;
+			}
+			characterController.Move(move * Time.deltaTime);
+			dashAmount--;
+			test.text = dashAmount.ToString();
+		}
+	}
+
+	public void DeactivateIsDashing()
+	{
+		isDashing = false;
+		dashTrailRenderer.emitting = false;
+	}
+
+	private void DashCooldown()
+	{
+		if (dashAmount < 3)
+		{
+			dashCooldown -= Time.deltaTime;
+			if (dashCooldown <= 0)
+			{
+				dashAmount++;
+				AudioManager.Instance.Play("DashRecharge", 1f + (dashAmount / 5f));
+				dashCooldown = 3f;
+				test.text = dashAmount.ToString();
+			}
 		}
 	}
 
