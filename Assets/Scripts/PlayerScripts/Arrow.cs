@@ -9,6 +9,7 @@ public class Arrow : MonoBehaviour
     [SerializeField] private Transform summonPoint;
     [SerializeField] private Material[] materials;
     private float summonSpeed = 2;
+    private const int summonMultiplier = 20;
     private bool isSummoned;
     private const int rotateToTargetSpeed = 10;
 
@@ -38,7 +39,7 @@ public class Arrow : MonoBehaviour
                 arrowRigidbody.Sleep();
                 arrowRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                 arrowRigidbody.isKinematic = true;
-                summonSpeed += 15f * Time.deltaTime;
+                summonSpeed += summonMultiplier * Time.deltaTime;
 
                 float step = summonSpeed * Time.deltaTime;
                 transform.position = Vector3.MoveTowards(transform.position, summonPoint.position, step);

@@ -43,9 +43,13 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void Play(string name)
+    public void Play(string name, float pitch = default)
     {
         Sound sound = Array.Find(_sounds, s => s.name == name);
+        if (pitch != default)
+        {
+            sound.source.pitch = pitch;
+        }
         sound.source.Play();
     }
 
