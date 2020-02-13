@@ -243,7 +243,7 @@ TrailRenderer:
       ctime6: 0
       ctime7: 0
       atime0: 0
-      atime1: 65535
+      atime1: 49151
       atime2: 0
       atime3: 0
       atime4: 0
@@ -597,7 +597,7 @@ GameObject:
   - component: {fileID: 538488792}
   - component: {fileID: 538488791}
   - component: {fileID: 538488790}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5724,6 +5724,65 @@ MonoBehaviour:
     name: DashRecharge
     loop: 0
     playOnAwake: 0
+  - source: {fileID: 0}
+    clip: {fileID: 8300000, guid: 339265ba67590d64aa16f82ac991ebfc, type: 3}
+    volume: 0.25
+    pitch: 1.3
+    name: Jump
+    loop: 0
+    playOnAwake: 0
+  - source: {fileID: 0}
+    clip: {fileID: 8300000, guid: 91551c8947e21a940ab185caeb580881, type: 3}
+    volume: 0.25
+    pitch: 1.3
+    name: Land
+    loop: 0
+    playOnAwake: 0
+  _soundGroups:
+  - name: Footsteps
+    sounds:
+    - source: {fileID: 0}
+      clip: {fileID: 8300000, guid: 223ece0dbd1ae274c9d0ddc8ac11bfed, type: 3}
+      volume: 0.3
+      pitch: 1
+      name: 
+      loop: 0
+      playOnAwake: 0
+    - source: {fileID: 0}
+      clip: {fileID: 8300000, guid: 4a38784fd456dcd42a2504e2cdb4f03a, type: 3}
+      volume: 0.3
+      pitch: 1
+      name: 
+      loop: 0
+      playOnAwake: 0
+    - source: {fileID: 0}
+      clip: {fileID: 8300000, guid: c25a0c68316659b4c892e104e2e8dbd2, type: 3}
+      volume: 0.3
+      pitch: 1
+      name: 
+      loop: 0
+      playOnAwake: 0
+    - source: {fileID: 0}
+      clip: {fileID: 8300000, guid: ba04c912d3810d14991879444aaf2447, type: 3}
+      volume: 0.3
+      pitch: 1
+      name: 
+      loop: 0
+      playOnAwake: 0
+    - source: {fileID: 0}
+      clip: {fileID: 8300000, guid: 584ee99c0abfaaf4799333a94f30da70, type: 3}
+      volume: 0.3
+      pitch: 1
+      name: 
+      loop: 0
+      playOnAwake: 0
+    - source: {fileID: 0}
+      clip: {fileID: 8300000, guid: 2c4ac0f62fdf7f348a72f1a2ddd5d24c, type: 3}
+      volume: 0.3
+      pitch: 1
+      name: 
+      loop: 0
+      playOnAwake: 0
 --- !u!1 &1055211733
 GameObject:
   m_ObjectHideFlags: 0
@@ -5882,7 +5941,7 @@ GameObject:
   - component: {fileID: 1191374032}
   - component: {fileID: 1191374031}
   m_Layer: 5
-  m_Name: Text
+  m_Name: DashAmount_text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5900,7 +5959,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1340012943}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -6131,8 +6190,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 2110588091}
-  - {fileID: 1428051961}
   - {fileID: 1191374030}
+  - {fileID: 1428051961}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6164,14 +6223,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1352641518}
-  m_LocalRotation: {x: 0.7069765, y: 0.7068804, z: -0.013574584, w: -0.01789293}
+  m_LocalRotation: {x: 0.7070577, y: 0.7069936, z: -0.008330138, w: -0.012649079}
   m_LocalPosition: {x: -0.019, y: -0.055, z: -0.076}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5006512735275806041}
   m_Father: {fileID: 8809683766560005507}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: -0.35, y: 182.54999, z: 90}
+  m_LocalEulerAnglesHint: {x: -0.35, y: 181.7, z: 90}
 --- !u!1 &1355961881
 GameObject:
   m_ObjectHideFlags: 0
@@ -11066,7 +11125,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1340012943}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1456378386
 GameObject:
@@ -11080,7 +11139,7 @@ GameObject:
   - component: {fileID: 1456378389}
   - component: {fileID: 1456378388}
   - component: {fileID: 1456378387}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11174,7 +11233,7 @@ GameObject:
   - component: {fileID: 1460347684}
   - component: {fileID: 1460347683}
   - component: {fileID: 1460347682}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11608,7 +11667,7 @@ GameObject:
   - component: {fileID: 1654083631}
   - component: {fileID: 1654083630}
   - component: {fileID: 1654083629}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16779,7 +16838,7 @@ GameObject:
   - component: {fileID: 2002040411}
   - component: {fileID: 2002040410}
   - component: {fileID: 2002040409}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17562,7 +17621,7 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: 2dd6ba87d1ab23042b80d2276ddffdd8, type: 2}
   arrowMeshRenderer: {fileID: 7718390322586299286}
   dashTrailRenderer: {fileID: 1604537574}
-  test: {fileID: 1191374031}
+  dashAmountText: {fileID: 1191374031}
   environmentLayerMask:
     serializedVersion: 2
     m_Bits: 256
@@ -20221,7 +20280,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5483433181933957008}
-  m_LocalRotation: {x: 0.016841732, y: 0.010904807, z: -0.6578644, w: 0.7528691}
+  m_LocalRotation: {x: 0.031060345, y: 0.023468299, z: -0.65941757, w: 0.75076824}
   m_LocalPosition: {x: 0.009, y: -0.156, z: 0.331}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -20231,7 +20290,7 @@ Transform:
   - {fileID: 787358277}
   m_Father: {fileID: 2058202260}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 2.276, y: -0.32900003, z: -82.301}
+  m_LocalEulerAnglesHint: {x: 4.45, y: -0.32900003, z: -82.6}
 --- !u!1 &8862270132221536629
 GameObject:
   m_ObjectHideFlags: 0

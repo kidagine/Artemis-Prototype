@@ -35,38 +35,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Draw"",
-                    ""type"": ""Button"",
-                    ""id"": ""e06c2830-a4b4-4bfe-9653-43bf36c4ce82"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Fire"",
-                    ""type"": ""Button"",
-                    ""id"": ""5d67e0b8-641a-4434-aff4-e199d4928903"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""StartSummon"",
-                    ""type"": ""Button"",
-                    ""id"": ""1894f445-4391-4078-a748-c419e398ff74"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""StopSummon"",
-                    ""type"": ""Button"",
-                    ""id"": ""1eb4fe6e-db9f-4e27-ad05-abb586c1961f"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
                     ""name"": ""Crouch"",
                     ""type"": ""Button"",
                     ""id"": ""66682dd0-7a58-4da3-8b26-b0e09ca8013b"",
@@ -75,9 +43,49 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""e06c2830-a4b4-4bfe-9653-43bf36c4ce82"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Dash"",
                     ""type"": ""Button"",
+                    ""id"": ""5d67e0b8-641a-4434-aff4-e199d4928903"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Draw"",
+                    ""type"": ""Button"",
+                    ""id"": ""1894f445-4391-4078-a748-c419e398ff74"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""1eb4fe6e-db9f-4e27-ad05-abb586c1961f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""StartSummon"",
+                    ""type"": ""Button"",
                     ""id"": ""a560a824-8e73-4a10-8093-334b493372e1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""StopSummon"",
+                    ""type"": ""Button"",
+                    ""id"": ""94807785-37b2-43b6-9170-4df961165a74"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -339,6 +347,28 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""cd0807b1-f79c-4550-84eb-09afa2e079d6"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2e502924-fcee-4219-b706-8ed222fd2d1c"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""26822743-c1ea-4e46-8791-9c53a7a2882e"",
                     ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
@@ -396,12 +426,13 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         m_PlayerControls = asset.FindActionMap("PlayerControls", throwIfNotFound: true);
         m_PlayerControls_Move = m_PlayerControls.FindAction("Move", throwIfNotFound: true);
         m_PlayerControls_Camera = m_PlayerControls.FindAction("Camera", throwIfNotFound: true);
+        m_PlayerControls_Crouch = m_PlayerControls.FindAction("Crouch", throwIfNotFound: true);
+        m_PlayerControls_Jump = m_PlayerControls.FindAction("Jump", throwIfNotFound: true);
+        m_PlayerControls_Dash = m_PlayerControls.FindAction("Dash", throwIfNotFound: true);
         m_PlayerControls_Draw = m_PlayerControls.FindAction("Draw", throwIfNotFound: true);
         m_PlayerControls_Fire = m_PlayerControls.FindAction("Fire", throwIfNotFound: true);
         m_PlayerControls_StartSummon = m_PlayerControls.FindAction("StartSummon", throwIfNotFound: true);
         m_PlayerControls_StopSummon = m_PlayerControls.FindAction("StopSummon", throwIfNotFound: true);
-        m_PlayerControls_Crouch = m_PlayerControls.FindAction("Crouch", throwIfNotFound: true);
-        m_PlayerControls_Dash = m_PlayerControls.FindAction("Dash", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -453,24 +484,26 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private IPlayerControlsActions m_PlayerControlsActionsCallbackInterface;
     private readonly InputAction m_PlayerControls_Move;
     private readonly InputAction m_PlayerControls_Camera;
+    private readonly InputAction m_PlayerControls_Crouch;
+    private readonly InputAction m_PlayerControls_Jump;
+    private readonly InputAction m_PlayerControls_Dash;
     private readonly InputAction m_PlayerControls_Draw;
     private readonly InputAction m_PlayerControls_Fire;
     private readonly InputAction m_PlayerControls_StartSummon;
     private readonly InputAction m_PlayerControls_StopSummon;
-    private readonly InputAction m_PlayerControls_Crouch;
-    private readonly InputAction m_PlayerControls_Dash;
     public struct PlayerControlsActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlayerControlsActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_PlayerControls_Move;
         public InputAction @Camera => m_Wrapper.m_PlayerControls_Camera;
+        public InputAction @Crouch => m_Wrapper.m_PlayerControls_Crouch;
+        public InputAction @Jump => m_Wrapper.m_PlayerControls_Jump;
+        public InputAction @Dash => m_Wrapper.m_PlayerControls_Dash;
         public InputAction @Draw => m_Wrapper.m_PlayerControls_Draw;
         public InputAction @Fire => m_Wrapper.m_PlayerControls_Fire;
         public InputAction @StartSummon => m_Wrapper.m_PlayerControls_StartSummon;
         public InputAction @StopSummon => m_Wrapper.m_PlayerControls_StopSummon;
-        public InputAction @Crouch => m_Wrapper.m_PlayerControls_Crouch;
-        public InputAction @Dash => m_Wrapper.m_PlayerControls_Dash;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -486,6 +519,15 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Camera.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCamera;
                 @Camera.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCamera;
                 @Camera.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCamera;
+                @Crouch.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCrouch;
+                @Crouch.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCrouch;
+                @Crouch.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCrouch;
+                @Jump.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnJump;
+                @Dash.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnDash;
+                @Dash.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnDash;
+                @Dash.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnDash;
                 @Draw.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnDraw;
                 @Draw.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnDraw;
                 @Draw.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnDraw;
@@ -498,12 +540,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @StopSummon.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnStopSummon;
                 @StopSummon.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnStopSummon;
                 @StopSummon.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnStopSummon;
-                @Crouch.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCrouch;
-                @Crouch.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCrouch;
-                @Crouch.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnCrouch;
-                @Dash.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnDash;
-                @Dash.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnDash;
-                @Dash.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnDash;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -514,6 +550,15 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Camera.started += instance.OnCamera;
                 @Camera.performed += instance.OnCamera;
                 @Camera.canceled += instance.OnCamera;
+                @Crouch.started += instance.OnCrouch;
+                @Crouch.performed += instance.OnCrouch;
+                @Crouch.canceled += instance.OnCrouch;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
+                @Dash.started += instance.OnDash;
+                @Dash.performed += instance.OnDash;
+                @Dash.canceled += instance.OnDash;
                 @Draw.started += instance.OnDraw;
                 @Draw.performed += instance.OnDraw;
                 @Draw.canceled += instance.OnDraw;
@@ -526,12 +571,6 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @StopSummon.started += instance.OnStopSummon;
                 @StopSummon.performed += instance.OnStopSummon;
                 @StopSummon.canceled += instance.OnStopSummon;
-                @Crouch.started += instance.OnCrouch;
-                @Crouch.performed += instance.OnCrouch;
-                @Crouch.canceled += instance.OnCrouch;
-                @Dash.started += instance.OnDash;
-                @Dash.performed += instance.OnDash;
-                @Dash.canceled += instance.OnDash;
             }
         }
     }
@@ -558,11 +597,12 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnCamera(InputAction.CallbackContext context);
+        void OnCrouch(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
+        void OnDash(InputAction.CallbackContext context);
         void OnDraw(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnStartSummon(InputAction.CallbackContext context);
         void OnStopSummon(InputAction.CallbackContext context);
-        void OnCrouch(InputAction.CallbackContext context);
-        void OnDash(InputAction.CallbackContext context);
     }
 }

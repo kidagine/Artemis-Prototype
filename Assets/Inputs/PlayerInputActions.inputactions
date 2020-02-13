@@ -22,38 +22,6 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Draw",
-                    "type": "Button",
-                    "id": "e06c2830-a4b4-4bfe-9653-43bf36c4ce82",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "Fire",
-                    "type": "Button",
-                    "id": "5d67e0b8-641a-4434-aff4-e199d4928903",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "StartSummon",
-                    "type": "Button",
-                    "id": "1894f445-4391-4078-a748-c419e398ff74",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "StopSummon",
-                    "type": "Button",
-                    "id": "1eb4fe6e-db9f-4e27-ad05-abb586c1961f",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
                     "name": "Crouch",
                     "type": "Button",
                     "id": "66682dd0-7a58-4da3-8b26-b0e09ca8013b",
@@ -62,9 +30,49 @@
                     "interactions": ""
                 },
                 {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "e06c2830-a4b4-4bfe-9653-43bf36c4ce82",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Dash",
                     "type": "Button",
+                    "id": "5d67e0b8-641a-4434-aff4-e199d4928903",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Draw",
+                    "type": "Button",
+                    "id": "1894f445-4391-4078-a748-c419e398ff74",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Fire",
+                    "type": "Button",
+                    "id": "1eb4fe6e-db9f-4e27-ad05-abb586c1961f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "StartSummon",
+                    "type": "Button",
                     "id": "a560a824-8e73-4a10-8093-334b493372e1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "StopSummon",
+                    "type": "Button",
+                    "id": "94807785-37b2-43b6-9170-4df961165a74",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
@@ -321,6 +329,28 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Crouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cd0807b1-f79c-4550-84eb-09afa2e079d6",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2e502924-fcee-4219-b706-8ed222fd2d1c",
+                    "path": "<Keyboard>/space",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
