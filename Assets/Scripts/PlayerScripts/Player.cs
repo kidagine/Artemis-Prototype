@@ -13,25 +13,28 @@ public class Player : MonoBehaviour
 	[SerializeField] private Material material;
 	[SerializeField] private MeshRenderer arrowMeshRenderer;
 	[SerializeField] private TrailRenderer dashTrailRenderer;
-	[SerializeField] private Text test;
+	[SerializeField] private Text dashAmountText;
 	[SerializeField] private LayerMask environmentLayerMask;
 	private Coroutine drawBowCoroutine;
 	private Coroutine summonArrowCoroutine;
 	private const float dashForce = 500f;
-	private const float gravity = 0.1f;
+	private const float gravity = 20f;
 	private const float aimSpeed = 1.5f;
 	private const float summonArrowSpeed = 2f;
 	private const float walkSpeed = 4f;
+	private const float jumpForce = 1f;
 	private const float crouchSpeedMultiplier = 0.7f;
 	private const float standUpSpeedMultiplier = 1f;
 	private float currentSpeedMultiplier = 1f;
 	private float firePower;
 	private float moveSpeed = 4f;
 	private float dashCooldown = 3;
+	private float footstepCooldown = 0.32f;
 	private int dashAmount = 3;
 	private Vector3 velocity;
 	private bool isDashing;
 	private bool isGrounded;
+	private bool isInAir;
 	private bool hasArrow = true;
 	private bool isCrouching;
 
@@ -44,22 +47,27 @@ public class Player : MonoBehaviour
 		Gravity();
 		Move();
 		DashCooldown();
+		Footsteps();
 	}
 
     private void CheckGround()
     {
 		Vector3 checkGround = new Vector3(transform.position.x, transform.position.y - characterController.height / 2, transform.position.z);
-		isGrounded = Physics.Raycast(checkGround, Vector3.down, 0.1f, environmentLayerMask);
+		isGrounded = Physics.Raycast(checkGround, Vector3.down, 0.5f, environmentLayerMask);
     }
 
     private void Gravity()
 	{
-		if (isGrounded)
-        {	
+		if (isGrounded && velocity.y < 0)
+		{
+			if (isInAir)
+			{
+				AudioManager.Instance.Play("Land");
+				isInAir = false;
+			}
 			velocity.y = -2;
-        }
-		velocity.y -= gravity;
-
+		}
+		velocity.y -= gravity * Time.deltaTime;
 		characterController.Move(velocity * Time.deltaTime);
     }
 
@@ -97,6 +105,16 @@ public class Player : MonoBehaviour
 		}
 	}
 
+	public void Jump()
+	{
+		if (isGrounded)
+		{
+			AudioManager.Instance.Play("Jump");
+			velocity.y = Mathf.Sqrt(jumpForce * 2.0f * gravity);
+			isInAir = true;
+		}
+	}
+
 	public void Dash()
 	{
 		if (dashAmount > 0)
@@ -113,7 +131,7 @@ public class Player : MonoBehaviour
 			}
 			characterController.Move(move * Time.deltaTime);
 			dashAmount--;
-			test.text = dashAmount.ToString();
+			dashAmountText.text = dashAmount.ToString();
 		}
 	}
 
@@ -133,7 +151,7 @@ public class Player : MonoBehaviour
 				dashAmount++;
 				AudioManager.Instance.Play("DashRecharge", 1f + (dashAmount / 5f));
 				dashCooldown = 3f;
-				test.text = dashAmount.ToString();
+				dashAmountText.text = dashAmount.ToString();
 			}
 		}
 	}
@@ -154,7 +172,7 @@ public class Player : MonoBehaviour
 		moveSpeed = aimSpeed * currentSpeedMultiplier;
 
 		float elapsedTime = 0f;
-		float waitTime = 0.7f;
+		float waitTime = 0.5f;
 		float startValue = 0;
 		float endValue = 1;
 		while (elapsedTime < waitTime)
@@ -240,6 +258,19 @@ public class Player : MonoBehaviour
 			hasArrow = true;
 			arrowMeshRenderer.shadowCastingMode = ShadowCastingMode.Off;
 			bow.EquipArrow();
+		}
+	}
+
+	private void Footsteps()
+	{
+		if (movementInput.magnitude > 0 && isGrounded)
+		{
+			footstepCooldown-= Time.deltaTime;
+			if (footstepCooldown <= 0)
+			{
+				AudioManager.Instance.PlayRandomFromSoundGroup("Footsteps");
+				footstepCooldown = 0.32f;
+			}
 		}
 	}
 }

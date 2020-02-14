@@ -14,6 +14,7 @@ public class PlayerInputSystem : MonoBehaviour
 		playerInputActions.PlayerControls.Move.performed += SetMove;
 		playerInputActions.PlayerControls.Camera.performed += SetCamera;
 		playerInputActions.PlayerControls.Crouch.performed += Crouch;
+		playerInputActions.PlayerControls.Jump.performed += Jump;
 		playerInputActions.PlayerControls.Dash.performed += Dash;
 		playerInputActions.PlayerControls.Draw.performed += DrawBow;
 		playerInputActions.PlayerControls.Fire.performed += FireArrow;
@@ -36,6 +37,14 @@ public class PlayerInputSystem : MonoBehaviour
 		if (context.performed)
 		{
 			playerScript.Crouch();
+		}
+	}
+
+	private void Jump(InputAction.CallbackContext context)
+	{
+		if (context.performed)
+		{
+			playerScript.Jump();
 		}
 	}
 
