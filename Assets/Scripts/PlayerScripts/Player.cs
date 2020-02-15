@@ -25,11 +25,14 @@ public class Player : MonoBehaviour
 	private const float jumpForce = 1f;
 	private const float crouchSpeedMultiplier = 0.7f;
 	private const float standUpSpeedMultiplier = 1f;
+	private const float footstepSlowSpeed = 0.45f;
+	private const float footstepFastSpeed = 0.3f;
 	private float currentSpeedMultiplier = 1f;
 	private float firePower;
 	private float moveSpeed = 4f;
 	private float dashCooldown = 3;
-	private float footstepCooldown = 0.32f;
+	private float footstepCooldown;
+	private float currentFootstepSpeed = 0.3f;
 	private int dashAmount = 3;
 	private Vector3 velocity;
 	private bool isDashing;
@@ -37,6 +40,7 @@ public class Player : MonoBehaviour
 	private bool isInAir;
 	private bool hasArrow = true;
 	private bool isCrouching;
+	private bool isCrouchLocked;
 
 	public Vector2 movementInput { get; set; }
 
@@ -53,7 +57,7 @@ public class Player : MonoBehaviour
     private void CheckGround()
     {
 		Vector3 checkGround = new Vector3(transform.position.x, transform.position.y - characterController.height / 2, transform.position.z);
-		isGrounded = Physics.Raycast(checkGround, Vector3.down, 0.5f, environmentLayerMask);
+		isGrounded = Physics.Raycast(checkGround, Vector3.down, 0.1f, environmentLayerMask);
     }
 
     private void Gravity()
@@ -63,9 +67,18 @@ public class Player : MonoBehaviour
 			if (isInAir)
 			{
 				AudioManager.Instance.Play("Land");
+				animator.SetBool("IsInAir", false);
 				isInAir = false;
 			}
 			velocity.y = -2;
+		}
+		else
+		{
+			if (!isInAir && !isCrouchLocked)
+			{
+				animator.SetBool("IsInAir", true);
+				isInAir = true;
+			}
 		}
 		velocity.y -= gravity * Time.deltaTime;
 		characterController.Move(velocity * Time.deltaTime);
@@ -75,6 +88,8 @@ public class Player : MonoBehaviour
 	{
 		if (!isDashing)
 		{
+			animator.SetFloat("MovementX", movementInput.x, 0.1f, Time.deltaTime);
+			animator.SetFloat("MovementY", movementInput.y, 0.1f, Time.deltaTime * 1.0f);
 			Vector3 move = transform.right * movementInput.x + transform.forward * movementInput.y;
 			characterController.Move(move * moveSpeed * Time.deltaTime);
 		}
@@ -88,8 +103,12 @@ public class Player : MonoBehaviour
 			bool cantStandUp = Physics.Raycast(checkCelling, Vector3.up, characterController.height, environmentLayerMask);
 			if (!cantStandUp)
 			{
+				AudioManager.Instance.Play("StandUp");
+				animator.SetTrigger("StandUp");
 				characterController.height = 2.0f;
+				isCrouchLocked = true;
 				currentSpeedMultiplier = standUpSpeedMultiplier;
+				currentFootstepSpeed = footstepFastSpeed;
 
 				moveSpeed = walkSpeed * currentSpeedMultiplier;
 				isCrouching = !isCrouching;
@@ -97,8 +116,11 @@ public class Player : MonoBehaviour
 		}
 		else
 		{
+			animator.SetTrigger("Crouch");
 			characterController.height = 1.0f;
+			isCrouchLocked = true;
 			currentSpeedMultiplier = crouchSpeedMultiplier;
+			currentFootstepSpeed = footstepSlowSpeed;
 
 			moveSpeed = walkSpeed * currentSpeedMultiplier;
 			isCrouching = !isCrouching;
@@ -110,8 +132,14 @@ public class Player : MonoBehaviour
 		if (isGrounded)
 		{
 			AudioManager.Instance.Play("Jump");
+			animator.SetTrigger("Jump");
+			animator.SetBool("IsInAir", true);
 			velocity.y = Mathf.Sqrt(jumpForce * 2.0f * gravity);
 			isInAir = true;
+			if (isCrouching)
+			{
+				Crouch();
+			}
 		}
 	}
 
@@ -120,9 +148,10 @@ public class Player : MonoBehaviour
 		if (dashAmount > 0)
 		{
 			AudioManager.Instance.Play("Dash");
-			animator.SetTrigger("Dash");
+			animator.SetBool("IsDashing", true);
 			isDashing = true;
 			dashTrailRenderer.emitting = true;
+			StopSummonArrow();
 
 			Vector3 move = transform.right * movementInput.x * dashForce + transform.forward * movementInput.y * dashForce;
 			if (move == Vector3.zero)
@@ -137,8 +166,19 @@ public class Player : MonoBehaviour
 
 	public void DeactivateIsDashing()
 	{
+		animator.SetBool("IsDashing", false);
 		isDashing = false;
 		dashTrailRenderer.emitting = false;
+	}
+
+	public void DeactiveIsCatching()
+	{
+		animator.SetBool("IsCatching", false);
+	}
+
+	public void DeactivateIsCrouchLocked()
+	{
+		isCrouchLocked = false;
 	}
 
 	private void DashCooldown()
@@ -170,6 +210,7 @@ public class Player : MonoBehaviour
 		reticleAnimator.SetBool("IsCharging", true);
 		animator.SetBool("IsCharging", true);
 		moveSpeed = aimSpeed * currentSpeedMultiplier;
+		currentFootstepSpeed = footstepSlowSpeed;
 
 		float elapsedTime = 0f;
 		float waitTime = 0.5f;
@@ -195,6 +236,7 @@ public class Player : MonoBehaviour
 			reticleAnimator.SetBool("IsCharging", false);
 			animator.SetBool("IsCharging", false);
 			moveSpeed = walkSpeed * currentSpeedMultiplier;
+			currentFootstepSpeed = footstepFastSpeed;
 
 			arrowMeshRenderer.shadowCastingMode = ShadowCastingMode.On;
 			hasArrow = false;
@@ -219,6 +261,7 @@ public class Player : MonoBehaviour
 		animator.SetBool("IsSummoning", true);
 		arrow.SetSummon(true);
 		moveSpeed = summonArrowSpeed * currentSpeedMultiplier;
+		currentFootstepSpeed = footstepSlowSpeed;
 
 		float elapsedTime = 0f;
 		float waitTime = 1.2f;
@@ -252,8 +295,9 @@ public class Player : MonoBehaviour
 		{
 			StopSummonArrow();
 			AudioManager.Instance.Play("CatchArrow");
-			animator.SetTrigger("Catch");
+			animator.SetBool("IsCatching", true);
 			moveSpeed = walkSpeed * currentSpeedMultiplier;
+			currentFootstepSpeed = footstepFastSpeed;
 
 			hasArrow = true;
 			arrowMeshRenderer.shadowCastingMode = ShadowCastingMode.Off;
@@ -265,11 +309,11 @@ public class Player : MonoBehaviour
 	{
 		if (movementInput.magnitude > 0 && isGrounded)
 		{
-			footstepCooldown-= Time.deltaTime;
+			footstepCooldown -= Time.deltaTime;
 			if (footstepCooldown <= 0)
 			{
 				AudioManager.Instance.PlayRandomFromSoundGroup("Footsteps");
-				footstepCooldown = 0.32f;
+				footstepCooldown = currentFootstepSpeed;
 			}
 		}
 	}
