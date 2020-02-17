@@ -83,10 +83,23 @@ public class Arrow : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
+        IInteractable interactable = other.gameObject.GetComponent<IInteractable>();
+        IEnemy enemy = other.gameObject.GetComponent<IEnemy>();
+
         if (!isSummoned)
         {
             AudioManager.Instance.Play("BounceArrow");
             hitEffectParticleSystem.Play();
+        }
+        if (interactable != null)
+        {
+            interactable.Interact();
+        }
+        if (enemy != null)
+        {
+            Vector3 hitDirection = other.contacts[0].point - transform.position;
+            hitDirection = -hitDirection.normalized;
+            enemy.Damage(hitDirection);
         }
     }
 }

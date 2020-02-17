@@ -18,11 +18,11 @@ public class Player : MonoBehaviour
 	private Coroutine drawBowCoroutine;
 	private Coroutine summonArrowCoroutine;
 	private const float dashForce = 500f;
-	private const float gravity = 20f;
+	private const float gravity = 15f;
 	private const float aimSpeed = 1.5f;
 	private const float summonArrowSpeed = 2f;
 	private const float walkSpeed = 4f;
-	private const float jumpForce = 1f;
+	private const float jumpForce = 2f;
 	private const float crouchSpeedMultiplier = 0.7f;
 	private const float standUpSpeedMultiplier = 1f;
 	private const float footstepSlowSpeed = 0.45f;
@@ -37,7 +37,7 @@ public class Player : MonoBehaviour
 	private Vector3 velocity;
 	private bool isDashing;
 	private bool isGrounded;
-	private bool isInAir;
+	private bool isInAir = true;
 	private bool hasArrow = true;
 	private bool isCrouching;
 	private bool isCrouchLocked;
@@ -116,6 +116,7 @@ public class Player : MonoBehaviour
 		}
 		else
 		{
+			AudioManager.Instance.Play("Crouch");
 			animator.SetTrigger("Crouch");
 			characterController.height = 1.0f;
 			isCrouchLocked = true;
