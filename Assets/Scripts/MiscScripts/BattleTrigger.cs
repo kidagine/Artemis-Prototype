@@ -12,7 +12,10 @@ public class BattleTrigger : MonoBehaviour
 		{
 			foreach (Transform enemy in enemies)
 			{
-				enemy.GetComponent<IEnemy>().TriggerBattle(other.transform);
+				if (enemy != null)
+				{
+					enemy.GetComponent<IEnemy>().TriggerBattle(other.transform);
+				}
 			}
 		}
 	}

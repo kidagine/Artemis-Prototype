@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -96,5 +97,51 @@ public class AudioManager : MonoBehaviour
         {
             PlayRandomFromSoundGroup(name);
         }
+    }
+
+    public void FadeIn(string name)
+    {
+        Sound sound = Array.Find(_sounds, s => s.name == name);
+        StartCoroutine(FadeInCoroutine(sound));
+    }
+
+    IEnumerator FadeInCoroutine(Sound sound)
+    {
+        sound.volume = 0;
+        sound.source.Play();
+        bool isVolumeMaxed = false;
+        while (!isVolumeMaxed)
+        {
+            sound.source.volume += 0.1f;
+            if (sound.source.volume >= 1.0f)
+            {
+                isVolumeMaxed = true;
+            }
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    public void FadeOut(string name)
+    {
+        Sound sound = Array.Find(_sounds, s => s.name == name);
+        StartCoroutine(FadeOutCoroutine(sound));
+    }
+
+    IEnumerator FadeOutCoroutine(Sound sound)
+    {
+        sound.volume = 1;
+        sound.loop = false;
+
+        bool isVolumeLowered = false;
+        while (!isVolumeLowered)
+        {
+            sound.source.volume -= 0.05f;
+            if (sound.source.volume <= 0.0f)
+            {
+                isVolumeLowered = true;
+            }
+            yield return new WaitForSeconds(0.1f);
+        }
+        sound.source.Stop();
     }
 }

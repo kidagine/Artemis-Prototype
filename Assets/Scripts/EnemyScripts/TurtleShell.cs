@@ -9,7 +9,7 @@ public class TurtleShell : MonoBehaviour, IEnemy
 	[SerializeField] private Animator animator;
 	private Transform player;
 	private const float damagedForce = 300f;
-	private int health = 2;
+	private int health = 1;
 	private bool isBattleTriggered;
 	private float dist;
 

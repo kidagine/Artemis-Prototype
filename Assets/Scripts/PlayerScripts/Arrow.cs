@@ -8,7 +8,7 @@ public class Arrow : MonoBehaviour
     [SerializeField] private Player player;
     [SerializeField] private Transform summonPoint;
     [SerializeField] private Material[] materials;
-    private float summonSpeed = 2;
+    private float summonSpeed = 4;
     private const int summonMultiplier = 20;
     private bool isSummoned;
     private const int rotateToTargetSpeed = 10;

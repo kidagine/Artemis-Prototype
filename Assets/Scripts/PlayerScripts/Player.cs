@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
 	[SerializeField] private Animator reticleAnimator;
 	[SerializeField] private Bow bow;
 	[SerializeField] private Arrow arrow;
+	[SerializeField] private Transform playerArmsTransform;
 	[SerializeField] private CharacterController characterController;
 	[SerializeField] private Material material;
 	[SerializeField] private MeshRenderer arrowMeshRenderer;
@@ -17,19 +18,19 @@ public class Player : MonoBehaviour
 	[SerializeField] private LayerMask environmentLayerMask;
 	private Coroutine drawBowCoroutine;
 	private Coroutine summonArrowCoroutine;
-	private const float dashForce = 500f;
+	private const float dashForce = 1000f;
 	private const float gravity = 15f;
-	private const float aimSpeed = 1.5f;
-	private const float summonArrowSpeed = 2f;
-	private const float walkSpeed = 4f;
-	private const float jumpForce = 2f;
+	private const float aimSpeed = 3.5f;
+	private const float summonArrowSpeed = 4f;
+	private const float walkSpeed = 6f;
+	private const float jumpForce = 2.5f;
 	private const float crouchSpeedMultiplier = 0.7f;
 	private const float standUpSpeedMultiplier = 1f;
 	private const float footstepSlowSpeed = 0.45f;
 	private const float footstepFastSpeed = 0.3f;
 	private float currentSpeedMultiplier = 1f;
 	private float firePower;
-	private float moveSpeed = 4f;
+	private float moveSpeed = 6f;
 	private float dashCooldown = 3;
 	private float footstepCooldown;
 	private float currentFootstepSpeed = 0.3f;
@@ -42,6 +43,7 @@ public class Player : MonoBehaviour
 	private bool isCrouching;
 	private bool isCrouchLocked;
 
+	public bool HasBow { get; set; } = false;
 	public Vector2 movementInput { get; set; }
 
 
@@ -157,11 +159,11 @@ public class Player : MonoBehaviour
 			Vector3 move = transform.right * movementInput.x * dashForce + transform.forward * movementInput.y * dashForce;
 			if (move == Vector3.zero)
 			{
-				move = transform.forward * dashForce;
+				move = transform.forward * dashForce * 2;
 			}
 			characterController.Move(move * Time.deltaTime);
 			dashAmount--;
-			dashAmountText.text = dashAmount.ToString();
+			UIManager.Instance.SetDash(dashAmount);
 		}
 	}
 
@@ -192,14 +194,14 @@ public class Player : MonoBehaviour
 				dashAmount++;
 				AudioManager.Instance.Play("DashRecharge", 1f + (dashAmount / 5f));
 				dashCooldown = 3f;
-				dashAmountText.text = dashAmount.ToString();
+				UIManager.Instance.SetDash(dashAmount);
 			}
 		}
 	}
 
 	public void DrawBow()
 	{
-		if (hasArrow)
+		if (hasArrow && HasBow)
 		{
 			drawBowCoroutine = StartCoroutine(DrawBowCoroutine());
 		}
@@ -230,7 +232,7 @@ public class Player : MonoBehaviour
 
 	public void FireArrow()
 	{
-		if (hasArrow)
+		if (hasArrow && HasBow)
 		{
 			StopCoroutine(drawBowCoroutine);
 			AudioManager.Instance.Play("FireBow");
@@ -303,6 +305,17 @@ public class Player : MonoBehaviour
 			hasArrow = true;
 			arrowMeshRenderer.shadowCastingMode = ShadowCastingMode.Off;
 			bow.EquipArrow();
+		}
+	}
+
+	public void GrabBow()
+	{
+		if (!HasBow)
+		{
+			AudioManager.Instance.Play("PickUp");
+			HasBow = true;
+			bow.gameObject.SetActive(true);
+			playerArmsTransform.gameObject.SetActive(true);
 		}
 	}
 
