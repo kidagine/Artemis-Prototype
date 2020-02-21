@@ -1,15 +1,19 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class TurtleShell : MonoBehaviour, IEnemy
 {
+	[SerializeField] private GameObject explosionPrefab;
+	[SerializeField] private Rigidbody enemyRigidbody;
+	[SerializeField] private Slider healthSlider;
 	[SerializeField] private NavMeshAgent navMeshAgent;
 	[SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
 	[SerializeField] private Animator animator;
 	private Transform player;
-	private const float damagedForce = 300f;
-	private int health = 1;
+	private int attackPoints = 5;
+	private int health = 2;
 	private bool isBattleTriggered;
 	private float dist;
 
@@ -27,19 +31,33 @@ public class TurtleShell : MonoBehaviour, IEnemy
 		}
 	}
 
-	public void Damage(Vector3 hitDirection)
+	public int Damage(Vector3 hitDirection)
     {
-		StartCoroutine(DamageEffect());
-		GetComponent<Rigidbody>().AddForce(hitDirection * damagedForce * 2);
 		health--;
+		UIManager.Instance.SetEnemyHealth(health, healthSlider);
 		if (health <= 0)
 		{
-			Die(hitDirection);
+			Freeze();
 		}
+		else
+		{
+			StartCoroutine(DamageEffect());
+		}
+		return health;
 	}
 
-    private void Die(Vector3 hitDirection)
+	private void Freeze()
+	{
+		isBattleTriggered = false;
+		skinnedMeshRenderer.material.SetColor("_BaseColor", Color.gray);
+		animator.speed = 0.0f;
+		enemyRigidbody.isKinematic = true;
+	}
+
+    public void Die()
     {
+		AudioManager.Instance.Play("EnemyDeath");
+		Instantiate(explosionPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
 		Destroy(gameObject);
     }
 
@@ -60,5 +78,13 @@ public class TurtleShell : MonoBehaviour, IEnemy
 	public void Enraged()
 	{
 		isBattleTriggered = true;
+	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		if (other.gameObject.CompareTag("Player"))
+		{
+			other.GetComponent<Player>().Damage(attackPoints);
+		}
 	}
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -14,15 +13,14 @@ public class Player : MonoBehaviour
 	[SerializeField] private Material material;
 	[SerializeField] private MeshRenderer arrowMeshRenderer;
 	[SerializeField] private TrailRenderer dashTrailRenderer;
-	[SerializeField] private Text dashAmountText;
 	[SerializeField] private LayerMask environmentLayerMask;
 	private Coroutine drawBowCoroutine;
 	private Coroutine summonArrowCoroutine;
 	private const float dashForce = 1000f;
 	private const float gravity = 15f;
-	private const float aimSpeed = 3.5f;
-	private const float summonArrowSpeed = 4f;
-	private const float walkSpeed = 6f;
+	private const float aimSpeed = 4.5f;
+	private const float summonArrowSpeed = 5f;
+	private const float walkSpeed = 7f;
 	private const float jumpForce = 2.5f;
 	private const float crouchSpeedMultiplier = 0.7f;
 	private const float standUpSpeedMultiplier = 1f;
@@ -30,11 +28,12 @@ public class Player : MonoBehaviour
 	private const float footstepFastSpeed = 0.3f;
 	private float currentSpeedMultiplier = 1f;
 	private float firePower;
-	private float moveSpeed = 6f;
+	private float moveSpeed = 7f;
 	private float dashCooldown = 3;
 	private float footstepCooldown;
 	private float currentFootstepSpeed = 0.3f;
 	private int dashAmount = 3;
+	private int health = 100;
 	private Vector3 velocity;
 	private bool isDashing;
 	private bool isGrounded;
@@ -146,6 +145,21 @@ public class Player : MonoBehaviour
 		}
 	}
 
+	public void Damage(int damageAmount)
+	{
+		health -= damageAmount;
+		UIManager.Instance.SetHealth(health);
+		if (health <= 0)
+		{
+			Die();
+		}
+	}
+
+	private void Die()
+	{
+		Application.LoadLevel(Application.loadedLevel);
+	}
+
 	public void Dash()
 	{
 		if (dashAmount > 0)
@@ -216,7 +230,7 @@ public class Player : MonoBehaviour
 		currentFootstepSpeed = footstepSlowSpeed;
 
 		float elapsedTime = 0f;
-		float waitTime = 0.5f;
+		float waitTime = 0.1f;
 		float startValue = 0;
 		float endValue = 1;
 		while (elapsedTime < waitTime)

@@ -29,7 +29,7 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
-	public void SetHealth(float health)
+	public void SetHealth(int health)
 	{
 		healthText.text = health.ToString();
 		healthSlider.value = health;
@@ -49,5 +49,10 @@ public class UIManager : MonoBehaviour
 	public void HideEnter()
 	{
 		uiEnterText.SetActive(false);
+	}
+
+	public void SetEnemyHealth(float health, Slider healthSlider)
+	{
+		healthSlider.value = health;
 	}
 }

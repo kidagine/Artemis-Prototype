@@ -4,5 +4,6 @@ public interface IEnemy
 {
 	void Enraged();
 	void TriggerBattle(Transform player);
-    void Damage(Vector3 hitDirection);
+    int Damage(Vector3 hitDirection);
+	void Die();
 }
