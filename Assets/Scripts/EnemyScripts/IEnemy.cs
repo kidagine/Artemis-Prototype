@@ -6,4 +6,5 @@ public interface IEnemy
 	void TriggerBattle(Transform player);
     int Damage(Vector3 hitDirection);
 	void Die();
+	bool GetFrozen();
 }

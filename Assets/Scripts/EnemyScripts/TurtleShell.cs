@@ -12,9 +12,10 @@ public class TurtleShell : MonoBehaviour, IEnemy
 	[SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
 	[SerializeField] private Animator animator;
 	private Transform player;
-	private int attackPoints = 5;
+	private readonly int attackPoints = 5;
 	private int health = 2;
 	private bool isBattleTriggered;
+	private bool isFrozen;
 	private float dist;
 
 	private void Update()
@@ -48,6 +49,8 @@ public class TurtleShell : MonoBehaviour, IEnemy
 
 	private void Freeze()
 	{
+		isFrozen = true;
+		navMeshAgent.isStopped = true;
 		isBattleTriggered = false;
 		skinnedMeshRenderer.material.SetColor("_BaseColor", Color.gray);
 		animator.speed = 0.0f;
@@ -86,5 +89,10 @@ public class TurtleShell : MonoBehaviour, IEnemy
 		{
 			other.GetComponent<Player>().Damage(attackPoints);
 		}
+	}
+
+	public bool GetFrozen()
+	{
+		return isFrozen;
 	}
 }

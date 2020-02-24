@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
 	[SerializeField] private Text dashText;
 	[SerializeField] private Slider healthSlider;
 	[SerializeField] private Slider dashSlider;
+	[SerializeField] private Animator playerDamagedAnimator;
 
 
 	public static UIManager Instance { get; private set; }
@@ -54,5 +55,10 @@ public class UIManager : MonoBehaviour
 	public void SetEnemyHealth(float health, Slider healthSlider)
 	{
 		healthSlider.value = health;
+	}
+
+	public void PlayerDamaged()
+	{
+		playerDamagedAnimator.SetTrigger("Damage");
 	}
 }
