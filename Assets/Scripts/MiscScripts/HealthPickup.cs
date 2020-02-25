@@ -2,6 +2,7 @@
 
 public class HealthPickup : MonoBehaviour
 {
+    [SerializeField] private GameObject pickUpExplosionPrefab;
     private readonly int healthAmount = 20;
 
 
@@ -9,8 +10,12 @@ public class HealthPickup : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            other.gameObject.GetComponent<Player>().Heal(healthAmount);
-            Destroy(gameObject);
+            bool isHealed = other.gameObject.GetComponent<Player>().Heal(healthAmount);
+            if (isHealed)
+            {
+                Instantiate(pickUpExplosionPrefab, transform.position, Quaternion.identity);
+                Destroy(gameObject);
+            }
         }
     }
 }

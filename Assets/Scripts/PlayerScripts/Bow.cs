@@ -6,7 +6,7 @@ public class Bow : MonoBehaviour
     [SerializeField] private Transform arrowPoint;
     [SerializeField] private ParticleSystem sparkParticleSystem;
     [SerializeField] private TrailRenderer trailEffect;
-    private const float arrowForce = 55f;
+    private const float arrowForce = 45f;
 
 
     public void FireArrow(float firePower)

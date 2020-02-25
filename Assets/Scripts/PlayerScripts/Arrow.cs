@@ -121,7 +121,7 @@ public class Arrow : MonoBehaviour
                     }
                     stuckToEnemy = other.collider.gameObject;
                     arrowRigidbody.Sleep();
-                    arrowRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    arrowRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                     arrowRigidbody.isKinematic = true;
                 }
             }
