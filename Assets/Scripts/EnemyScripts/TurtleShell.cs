@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class TurtleShell : MonoBehaviour, IEnemy
 {
 	[SerializeField] private GameObject explosionPrefab;
+	[SerializeField] private GameObject healthPickupPrefab;
 	[SerializeField] private Rigidbody enemyRigidbody;
 	[SerializeField] private Slider healthSlider;
 	[SerializeField] private NavMeshAgent navMeshAgent;
@@ -61,6 +62,11 @@ public class TurtleShell : MonoBehaviour, IEnemy
     {
 		AudioManager.Instance.Play("EnemyDeath");
 		Instantiate(explosionPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
+		int dropHealth = Random.Range(0, 10);
+		if (dropHealth == 1)
+		{
+			Instantiate(healthPickupPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
+		}
 		Destroy(gameObject);
     }
 

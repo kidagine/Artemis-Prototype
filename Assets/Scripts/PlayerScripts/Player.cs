@@ -148,13 +148,27 @@ public class Player : MonoBehaviour
 		}
 	}
 
-	public void Heal(int healthAmount)
+	public bool Heal(int healthAmount)
 	{
 		if (health != maximumHealth)
 		{
-			health += healthAmount;
-			UIManager.Instance.SetHealth(health);
+			int healthReceived;
+			int tempHealthCheck = health + healthAmount;
+			if (tempHealthCheck >= maximumHealth)
+			{
+				int healthRemain = tempHealthCheck % maximumHealth;
+				healthReceived = healthAmount - healthRemain;
+			}
+			else
+			{
+				healthReceived = healthAmount;
+			}
+			health += healthReceived;
+			UIManager.Instance.SetHealth(health, healthReceived);
+			AudioManager.Instance.Play("Heal");
+			return true;
 		}
+		return false;
 	}
 
 	public void Damage(int damageAmount)
