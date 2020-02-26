@@ -22,7 +22,6 @@ public class Intro : MonoBehaviour
 
     public void EnablePlayerInputSystem()
     {
-        AudioManager.Instance.Play("Music");
         playerInputSystem.enabled = true;
     }
 }
