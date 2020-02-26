@@ -13,8 +13,8 @@ public class TurtleShell : MonoBehaviour, IEnemy
 	[SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
 	[SerializeField] private Animator animator;
 	private Transform player;
-	private readonly int attackPoints = 5;
-	private int health = 2;
+	private readonly int attackPoints = 15;
+	private int health = 1;
 	private bool isBattleTriggered;
 	private bool isFrozen;
 	private float dist;
@@ -28,6 +28,10 @@ public class TurtleShell : MonoBehaviour, IEnemy
 
 			if (dist != Mathf.Infinity && dist < 1.5f)
 			{
+				if (!AudioManager.Instance.IsPlaying("MinionAttack"))
+				{
+					AudioManager.Instance.Play("MinionAttack");
+				}
 				animator.SetTrigger("Attack");
 			}
 		}
@@ -35,6 +39,7 @@ public class TurtleShell : MonoBehaviour, IEnemy
 
 	public int Damage(Vector3 hitDirection)
     {
+		animator.SetTrigger("TakeHit");
 		health--;
 		UIManager.Instance.SetEnemyHealth(health, healthSlider);
 		if (health <= 0)
@@ -52,10 +57,10 @@ public class TurtleShell : MonoBehaviour, IEnemy
 	{
 		isFrozen = true;
 		navMeshAgent.isStopped = true;
+		navMeshAgent.velocity = Vector3.zero;
 		isBattleTriggered = false;
 		skinnedMeshRenderer.material.SetColor("_BaseColor", Color.gray);
 		animator.speed = 0.0f;
-		enemyRigidbody.isKinematic = true;
 	}
 
     public void Die()
@@ -80,6 +85,7 @@ public class TurtleShell : MonoBehaviour, IEnemy
 
 	public void TriggerBattle(Transform player)
 	{
+		isBattleTriggered = true;
 		this.player = player;
 		animator.SetBool("HasDetectedPlayer", true);
 	}
