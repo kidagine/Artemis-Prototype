@@ -17,6 +17,7 @@ public class BattleTrigger : MonoBehaviour
 					enemy.GetComponent<IEnemy>().TriggerBattle(other.transform);
 				}
 			}
+			gameObject.SetActive(false);
 		}
 	}
 }
