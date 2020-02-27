@@ -7,7 +7,6 @@ public class TurtleShell : MonoBehaviour, IEnemy
 {
 	[SerializeField] private GameObject explosionPrefab;
 	[SerializeField] private GameObject healthPickupPrefab;
-	[SerializeField] private Rigidbody enemyRigidbody;
 	[SerializeField] private Slider healthSlider;
 	[SerializeField] private NavMeshAgent navMeshAgent;
 	[SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
@@ -28,10 +27,6 @@ public class TurtleShell : MonoBehaviour, IEnemy
 
 			if (dist != Mathf.Infinity && dist < 1.5f)
 			{
-				if (!AudioManager.Instance.IsPlaying("MinionAttack"))
-				{
-					AudioManager.Instance.Play("MinionAttack");
-				}
 				animator.SetTrigger("Attack");
 			}
 		}
@@ -99,6 +94,10 @@ public class TurtleShell : MonoBehaviour, IEnemy
 	{
 		if (other.gameObject.CompareTag("Player"))
 		{
+			if (!AudioManager.Instance.IsPlaying("MinionAttack"))
+			{
+				AudioManager.Instance.Play("MinionAttack");
+			}
 			other.GetComponent<Player>().Damage(attackPoints);
 		}
 	}

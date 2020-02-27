@@ -2,7 +2,9 @@
 
 public class HordeDoor : MonoBehaviour
 {
+    [SerializeField] private Transform player;
     [SerializeField] private Animator doorAnimator;
+    [SerializeField] private GameObject spawnRound;
     [SerializeField] private int hordeAmount;
     [SerializeField] private int rounds;
 
@@ -10,7 +12,7 @@ public class HordeDoor : MonoBehaviour
     public void HordeNotify()
     {
         hordeAmount--;
-        if (rounds != 0 && hordeAmount <= 1)
+        if (rounds != 0 && hordeAmount <= 8)
         {
             rounds--;
             SpawnRoundHorde();
@@ -29,6 +31,11 @@ public class HordeDoor : MonoBehaviour
 
     private void SpawnRoundHorde()
     {
+        spawnRound.SetActive(true);
+        for (int i = 0; i < spawnRound.transform.childCount; i++)
+        {
+            spawnRound.transform.GetChild(i).GetComponent<IEnemy>().TriggerBattle(player);
+        }
         Debug.Log("new round");
     }
 }
