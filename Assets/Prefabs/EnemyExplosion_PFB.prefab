@@ -14447,6 +14447,7 @@ GameObject:
   - component: {fileID: 6773007560663362060}
   - component: {fileID: 6773007560663362063}
   - component: {fileID: 6773007560663362062}
+  - component: {fileID: -1556778663827795762}
   m_Layer: 0
   m_Name: EnemyExplosion_PFB
   m_TagString: Untagged
@@ -19260,3 +19261,16 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &-1556778663827795762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6773007560663362097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: effb083ce52ef9a4b94ca8358c3cf341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeUntilDestroy: 0.5

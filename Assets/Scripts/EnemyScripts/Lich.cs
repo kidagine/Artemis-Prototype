@@ -130,8 +130,8 @@ public class Lich : MonoBehaviour, IEnemy
     public void TriggerBattle(Transform player)
     {
         fireDist = Random.Range(8, 22);
-        isBattleTriggered = true;
         this.player = player;
+        isBattleTriggered = true;
         animator.SetBool("HasDetectedPlayer", true);
     }
 }
