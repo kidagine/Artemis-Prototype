@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 9090079571049949814}
   - component: {fileID: 4934506298973343295}
   - component: {fileID: 8775752427001650435}
+  - component: {fileID: -5996375617075782275}
   m_Layer: 0
   m_Name: EnemyProjectile
   m_TagString: Untagged
@@ -125,3 +126,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectileExplosionPrefab: {fileID: 6773007560663362097, guid: 2f6a34a9b66ccba46a6ea50315a1db29,
     type: 3}
+  speed: 1500
+--- !u!114 &-5996375617075782275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2427455852525938203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: effb083ce52ef9a4b94ca8358c3cf341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeUntilDestroy: 5

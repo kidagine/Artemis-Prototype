@@ -3,7 +3,7 @@
 public class EnemyProjectile : MonoBehaviour
 {
 	[SerializeField] private GameObject projectileExplosionPrefab;
-    private readonly int speed = 1400;
+    [SerializeField] private int speed = 1400;
 	private readonly int attackPoints = 20;
 
 		

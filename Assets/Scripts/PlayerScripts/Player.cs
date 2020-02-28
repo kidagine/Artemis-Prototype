@@ -48,7 +48,15 @@ public class Player : MonoBehaviour
 	public Vector2 movementInput { get; set; }
 
 
-    void Update()
+	void Awake()
+	{
+		if (CheckpointManager.Instance.SpawnPosition != Vector3.zero)
+		{
+			transform.position = CheckpointManager.Instance.SpawnPosition;
+		}
+	}
+
+	void Update()
     {
 		CheckGround();
 		Gravity();
