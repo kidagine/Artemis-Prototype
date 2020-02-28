@@ -107,7 +107,6 @@ public class Arrow : MonoBehaviour
             }
             if (enemy != null && !hasHit)
             {
-                Debug.Log("hit");
                 AudioManager.Instance.Play("Kill");
                 reticleAnimator.SetTrigger("Hit");
                 hasHit = true;
