@@ -21,13 +21,6 @@ public class Lich : MonoBehaviour, IEnemy
     private bool isFrozen;
 
 
-    private void Start()
-    {
-        //fireDist = Random.Range(5, 7);
-        //isBattleTriggered = true;
-        //animator.SetBool("HasDetectedPlayer", true);
-    }
-
     void Update()
     {
         if (isBattleTriggered)

@@ -29,7 +29,6 @@ public class Fiery : MonoBehaviour, IEnemy
 			{
 				animator.SetTrigger("Attack");
 			}
-			Debug.Log(dist);
 		}
 	}
 
