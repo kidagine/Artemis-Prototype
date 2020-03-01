@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class Player : MonoBehaviour
 	[SerializeField] private LayerMask environmentLayerMask;
 	private Coroutine drawBowCoroutine;
 	private Coroutine summonArrowCoroutine;
-	private const float dashForce = 1000f;
+	private const float dashForce = 500f;
 	private const float gravity = 15f;
 	private const float aimSpeed = 4.5f;
 	private const float summonArrowSpeed = 5f;
@@ -26,6 +27,7 @@ public class Player : MonoBehaviour
 	private const float standUpSpeedMultiplier = 1f;
 	private const float footstepSlowSpeed = 0.45f;
 	private const float footstepFastSpeed = 0.3f;
+	private const int maximumHealth = 100;
 	private float currentSpeedMultiplier = 1f;
 	private float firePower;
 	private float moveSpeed = 7f;
@@ -46,19 +48,28 @@ public class Player : MonoBehaviour
 	public Vector2 movementInput { get; set; }
 
 
-    void Update()
+	void Awake()
+	{
+		if (CheckpointManager.Instance.SpawnPosition != Vector3.zero)
+		{
+			transform.position = CheckpointManager.Instance.SpawnPosition;
+		}
+	}
+
+	void Update()
     {
 		CheckGround();
 		Gravity();
 		Move();
 		DashCooldown();
 		Footsteps();
+		CheckOnDash();
 	}
 
     private void CheckGround()
     {
 		Vector3 checkGround = new Vector3(transform.position.x, transform.position.y - characterController.height / 2, transform.position.z);
-		isGrounded = Physics.Raycast(checkGround, Vector3.down, 0.1f, environmentLayerMask);
+		isGrounded = Physics.Raycast(checkGround, Vector3.down, 0.5f, environmentLayerMask);
     }
 
     private void Gravity()
@@ -145,9 +156,34 @@ public class Player : MonoBehaviour
 		}
 	}
 
+	public bool Heal(int healthAmount)
+	{
+		if (health != maximumHealth)
+		{
+			int healthReceived;
+			int tempHealthCheck = health + healthAmount;
+			if (tempHealthCheck >= maximumHealth)
+			{
+				int healthRemain = tempHealthCheck % maximumHealth;
+				healthReceived = healthAmount - healthRemain;
+			}
+			else
+			{
+				healthReceived = healthAmount;
+			}
+			health += healthReceived;
+			UIManager.Instance.SetHealth(health, healthReceived);
+			AudioManager.Instance.Play("Heal");
+			return true;
+		}
+		return false;
+	}
+
 	public void Damage(int damageAmount)
 	{
 		health -= damageAmount;
+		AudioManager.Instance.Play("PlayerDamaged");
+		UIManager.Instance.PlayerDamaged();
 		UIManager.Instance.SetHealth(health);
 		if (health <= 0)
 		{
@@ -157,7 +193,7 @@ public class Player : MonoBehaviour
 
 	private void Die()
 	{
-		Application.LoadLevel(Application.loadedLevel);
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 
 	public void Dash()
@@ -185,6 +221,7 @@ public class Player : MonoBehaviour
 	{
 		animator.SetBool("IsDashing", false);
 		isDashing = false;
+		characterController.enabled = true;
 		dashTrailRenderer.emitting = false;
 	}
 
@@ -310,15 +347,14 @@ public class Player : MonoBehaviour
 	{
 		if (!hasArrow)
 		{
+			animator.SetBool("IsCatching", true);
 			StopSummonArrow();
 			AudioManager.Instance.Play("CatchArrow");
-			animator.SetBool("IsCatching", true);
 			moveSpeed = walkSpeed * currentSpeedMultiplier;
 			currentFootstepSpeed = footstepFastSpeed;
-
 			hasArrow = true;
-			arrowMeshRenderer.shadowCastingMode = ShadowCastingMode.Off;
 			bow.EquipArrow();
+			arrowMeshRenderer.shadowCastingMode = ShadowCastingMode.Off;
 		}
 	}
 
@@ -342,6 +378,41 @@ public class Player : MonoBehaviour
 			{
 				AudioManager.Instance.PlayRandomFromSoundGroup("Footsteps");
 				footstepCooldown = currentFootstepSpeed;
+			}
+		}
+	}
+
+	private void CheckOnDash()
+	{
+		//if (HasBow && isDashing)
+		//{
+		//	int layer_mask = LayerMask.GetMask("Enemy");
+		//	if (Physics.SphereCast(transform.position, characterController.height / 2, transform.forward, out RaycastHit hit , 15, layer_mask))
+		//	{
+		//		Debug.Log("stm");
+		//		IEnemy enemy = hit.collider.GetComponent<IEnemy>();
+		//		if (enemy != null && enemy.GetFrozen())
+		//		{
+		//			enemy.Die();
+		//			GrabArrow();
+		//			Debug.Log(hit.collider.name);
+		//		}
+
+		//	}
+		//}
+	}
+
+	private void OnControllerColliderHit(ControllerColliderHit hit)
+	{
+		IEnemy enemy = hit.gameObject.GetComponent<IEnemy>();
+		if (enemy != null)
+		{
+			if (isDashing && enemy.GetFrozen())
+			{
+				transform.position = new Vector3(hit.transform.position.x, transform.position.y, hit.transform.position.z);
+				characterController.enabled = false;
+				enemy.Die();
+				GrabArrow();
 			}
 		}
 	}
